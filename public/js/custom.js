@@ -1,10 +1,13 @@
-import './bootstrap';
+/**
+ * Init global axios
+ */
+window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 // Auth State Management
 const updateAuthUI = () => {
     const token = localStorage.getItem('token');
     const authSection = document.getElementById('auth-section');
-    
+
     // Set axios Auth header globally if token exists
     if (token) {
         window.axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -24,7 +27,7 @@ const updateAuthUI = () => {
         `;
 
         const logoutBtn = document.getElementById('logout-btn');
-        if(logoutBtn){
+        if (logoutBtn) {
             logoutBtn.addEventListener('click', async () => {
                 try {
                     await window.axios.post('/api/logout');
