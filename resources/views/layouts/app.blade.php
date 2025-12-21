@@ -377,9 +377,23 @@
             user: JSON.parse(localStorage.getItem('user') || 'null'),
             cart: JSON.parse(localStorage.getItem('cart') || '{"items":[], "count":0}')
         };
+		axios.defaults.baseURL = '{{ url('/') }}'; // Solo la raíz, sin /api
 
-        // Configurar Axios
-        axios.defaults.baseURL = '{{ url('/api') }}';
+		// Configurar headers por defecto
+		axios.defaults.headers.common['Accept'] = 'application/json';
+		axios.defaults.headers.common['Content-Type'] = 'application/json';
+
+		// Interceptor para agregar token automáticamente
+		axios.interceptors.request.use(function (config) {
+			const token = localStorage.getItem('token');
+			if (token) {
+				config.headers.Authorization = `Bearer ${token}`;
+			}
+			return config;
+		}, function (error) {
+			return Promise.reject(error);
+		});
+
         if (window.NovaMarket.token) {
             axios.defaults.headers.common['Authorization'] = 'Bearer ' + window.NovaMarket.token;
         }
